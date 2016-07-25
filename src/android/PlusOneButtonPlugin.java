@@ -21,16 +21,19 @@ package com.jcesarmobile.plusonebutton;
 
 import org.apache.cordova.CallbackContext;
 import org.apache.cordova.CordovaPlugin;
+import org.apache.cordova.PluginResult;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import android.annotation.SuppressLint;
+import android.content.Intent;
 import android.view.View;
 import android.widget.RelativeLayout;
 
 
 import com.google.android.gms.plus.PlusOneButton;
+import com.google.android.gms.plus.PlusOneButton.OnPlusOneClickListener;
 
 
 /**
@@ -46,6 +49,7 @@ public class PlusOneButtonPlugin extends CordovaPlugin {
     private int size; //SIZE_SMALL = 0, SIZE_MEDIUM = 1, SIZE_TALL = 2, SIZE_STANDARD = 3
     private int annotation; //ANNOTATION_NONE = 0, ANNOTATION_BUBBLE = 1, ANNOTATION_INLINE = 2
     private boolean created = false;
+    private CallbackContext callbackContext = null;
 
 
     /**
@@ -57,6 +61,7 @@ public class PlusOneButtonPlugin extends CordovaPlugin {
      */
     @SuppressLint("NewApi")
     public boolean execute(String action, final JSONArray args, final CallbackContext callbackContext) throws JSONException {
+        this.callbackContext = callbackContext;
         if (action.equals("show")) {
             if (args.optJSONObject(0) != null) {
                 JSONObject obj = args.getJSONObject(0);
@@ -79,7 +84,7 @@ public class PlusOneButtonPlugin extends CordovaPlugin {
 
             cordova.getActivity().runOnUiThread(new Runnable() {
                 public void run() {
-                    mPlusOneButton.initialize(URL, null);
+                    mPlusOneButton.initialize(URL, new MyOnPlusOneClickListener());
                     mPlusOneButton.setVisibility(View.VISIBLE);
                     if (!created) {
                         cordova.getActivity().addContentView(mPlusOneButton,new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT,RelativeLayout.LayoutParams.WRAP_CONTENT));
@@ -110,7 +115,18 @@ public class PlusOneButtonPlugin extends CordovaPlugin {
     public void onResume(boolean multitasking) {
         super.onResume(multitasking);
         if (mPlusOneButton!=null) {
-          mPlusOneButton.initialize(URL, null);
+            mPlusOneButton.initialize(URL, new MyOnPlusOneClickListener());
+        }
+    }
+
+    private class MyOnPlusOneClickListener implements PlusOneButton.OnPlusOneClickListener {
+
+        @Override
+        public void onPlusOneClick(Intent intent) {
+            PluginResult result = new PluginResult(PluginResult.Status.OK);
+            result.setKeepCallback(true);
+            callbackContext.sendPluginResult(result);
+            cordova.startActivityForResult(PlusOneButtonPlugin.this,intent, 0);
         }
     }
 
