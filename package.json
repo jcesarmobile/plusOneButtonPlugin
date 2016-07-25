@@ -1,6 +1,6 @@
 {
   "name": "cordova-plugin-plusonebutton",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "This is a plugin for showing a native +1 button",
   "cordova": {
     "id": "cordova-plugin-plusonebutton",

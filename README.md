@@ -36,3 +36,13 @@ You can use Show to move the button changing the position params.
 Hide the button
 ===============
 `plusOneButton.hide();`
+
+Listen for click event
+======================
+
+```
+document.addEventListener("plusOneButtonClicked", onOneButtonClicked, false);
+function onOneButtonClicked(){
+    console.log('clicked');
+}
+```
