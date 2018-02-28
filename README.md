@@ -1,3 +1,7 @@
+DEPRECATION NOTICE
+------------------
+This plugin is deprecated because Google has deprecated the +1 button https://issuetracker.google.com/issues/73993857
+
 cordova-plugin-plusonebutton
 ------------------------
 
